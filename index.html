@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Lottery Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .color-red { background-color: #ef4444; }
+    .color-green { background-color: #22c55e; }
+    .color-violet { background-color: #8b5cf6; }
+    .color-red-violet { background: linear-gradient(45deg, #ef4444, #8b5cf6); }
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .hover-scale { transition: transform 0.2s; }
+    .hover-scale:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen">
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <!-- Header -->
+    <header class="text-center mb-8">
+      <h1 class="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+        Lottery Dashboard
+      </h1>
+      <p class="text-gray-400 mt-2">Real-time lottery results and predictions</p>
+    </header>
+
+    <!-- Current Game and Prediction -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Current Game Info -->
+      <div class="bg-gray-800 shadow-xl rounded-lg p-6 fade-in">
+        <h2 class="text-2xl font-semibold mb-4 text-blue-300">Current Game</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p class="text-gray-400">Issue Number:</p>
+            <p id="current-issue" class="font-medium text-lg">--</p>
+          </div>
+          <div>
+            <p class="text-gray-400">Start Time:</p>
+            <p id="current-start" class="font-medium text-lg">--</p>
+          </div>
+          <div>
+            <p class="text-gray-400">Time Remaining:</p>
+            <p id="current-countdown" class="font-medium text-lg text-yellow-400">--</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prediction -->
+      <div class="bg-gray-800 shadow-xl rounded-lg p-6 fade-in">
+        <h2 class="text-2xl font-semibold mb-4 text-purple-300">Number Prediction</h2>
+        <div class="text-center">
+          <p class="text-gray-400">Predicted Number:</p>
+          <p id="predicted-number" class="text-4xl font-bold text-purple-400 mb-2">--</p>
+          <p class="text-gray-400">Confidence:</p>
+          <p id="confidence-score" class="font-medium text-lg">--%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="bg-gray-800 shadow-xl rounded-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-300">Game History</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="bg-gray-700">
+              <th class="p-3 text-gray-300">Issue Number</th>
+              <th class="p-3 text-gray-300">Number</th>
+              <th class="p-3 text-gray-300">Color</th>
+              <th class="p-3 text-gray-300">Premium</th>
+              <th class="p-3 text-gray-300">Sum</th>
+            </tr>
+          </thead>
+          <tbody id="history-table" class="divide-y divide-gray-700">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function fetchLotteryData() {
+      try {
+        const response = await fetch('https://p.mob.workers.dev/both');
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+      }
+    }
+
+    function formatTimestamp(timestamp) {
+      return new Date(timestamp).toLocaleString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+
+    function updateCurrentGame(current) {
+      document.getElementById('current-issue').textContent = current.current.issueNumber;
+      document.getElementById('current-start').textContent = formatTimestamp(current.current.startTime);
+
+      const endTime = new Date(current.current.endTime);
+      const updateCountdown = () => {
+        const now = new Date();
+        const timeLeft = endTime - now;
+        if (timeLeft <= 0) {
+          document.getElementById('current-countdown').textContent = 'Ended';
+          clearInterval(countdownInterval);
+          fetchAndUpdate(); // Refresh data when current game ends
+        } else {
+          const seconds = Math.floor(timeLeft / 1000);
+          document.getElementById('current-countdown').textContent = `${seconds}s`;
+        }
+      };
+      updateCountdown();
+      const countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    function predictNumber(history) {
+      const numbers = history.data.list.slice(0, 10).map(item => parseInt(item.number));
+      const frequency = Array(10).fill(0);
+      numbers.forEach(num => frequency[num]++);
+
+      // Find the most frequent number
+      let maxFreq = Math.max(...frequency);
+      let predicted = frequency.indexOf(maxFreq);
+      
+      // If no clear winner, use weighted random choice
+      if (maxFreq <= 1) {
+        const total = frequency.reduce((sum, count) => sum + count, 0);
+        const weights = frequency.map(count => count / total);
+        let rand = Math.random();
+        for (let i = 0; i < weights.length; i++) {
+          rand -= weights[i];
+          if (rand <= 0) {
+            predicted = i;
+            break;
+          }
+        }
+      }
+
+      // Calculate confidence score
+      const totalNumbers = numbers.length;
+      const confidence = totalNumbers > 0 ? ((frequency[predicted] / totalNumbers) * 100).toFixed(1) : 0;
+
+      return { predicted, confidence };
+    }
+
+    function updatePrediction(history) {
+      const { predicted, confidence } = predictNumber(history);
+      document.getElementById('predicted-number').textContent = predicted;
+      document.getElementById('confidence-score').textContent = `${confidence}%`;
+    }
+
+    function updateHistoryTable(history) {
+      const tbody = document.getElementById('history-table');
+      tbody.innerHTML = '';
+      history.data.list.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-700 hover-scale';
+        row.innerHTML = `
+          <td class="p-3">${item.issueNumber}</td>
+          <td class="p-3">${item.number}</td>
+          <td class="p-3">
+            <div class="w-6 h-6 rounded-full color-${item.color.replace(',', '-')}" title="${item.color}"></div>
+          </td>
+          <td class="p-3">${item.premium}</td>
+          <td class="p-3">${item.sum}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function fetchAndUpdate() {
+      const data = await fetchLotteryData();
+      if (data) {
+        updateCurrentGame(data.current);
+        updateHistoryTable(data.history);
+        updatePrediction(data.history);
+      }
+    }
+
+    // Initial fetch and update
+    fetchAndUpdate();
+    // Refresh data every 30 seconds
+    setInterval(fetchAndUpdate, 30000);
+  </script>
+</body>
+</html>
