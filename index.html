@@ -3,190 +3,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Professional Lottery Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Lottery Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- Custom CSS -->
   <style>
-    .color-red { background-color: #ef4444; }
-    .color-green { background-color: #22c55e; }
-    .color-violet { background-color: #8b5cf6; }
-    .color-red-violet { background: linear-gradient(45deg, #ef4444, #8b5cf6); }
+    .color-red { background-color: #dc3545; }
+    .color-green { background-color: #28a745; }
+    .color-violet { background-color: #6f42c1; }
+    .color-red-violet { background: linear-gradient(45deg, #dc3545, #6f42c1); }
     .fade-in { animation: fadeIn 0.5s ease-in; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .hover-scale { transition: transform 0.2s; }
-    .hover-scale:hover { transform: scale(1.05); }
+    .hover-scale:hover { transform: scale(1.02); }
+    .prediction-card { border-left: 4px solid #007bff; }
+    .issue-input { max-width: 300px; }
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans min-h-screen">
-  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+<body class="bg-dark text-light">
+  <div class="container py-4 py-md-5">
     <!-- Header -->
-    <header class="text-center mb-8">
-      <h1 class="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-        Lottery Dashboard
-      </h1>
-      <p class="text-gray-400 mt-2">Real-time lottery results and predictions</p>
+    <header class="text-center mb-5">
+      <h1 class="display-4 fw-bold text-primary">Lottery Dashboard</h1>
+      <p class="text-muted">Real-time results and custom issue number predictions</p>
     </header>
 
-    <!-- Current Game and Prediction -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Current Game and Predictions -->
+    <div class="row g-4 mb-5">
       <!-- Current Game Info -->
-      <div class="bg-gray-800 shadow-xl rounded-lg p-6 fade-in">
-        <h2 class="text-2xl font-semibold mb-4 text-blue-300">Current Game</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <p class="text-gray-400">Issue Number:</p>
-            <p id="current-issue" class="font-medium text-lg">--</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Start Time:</p>
-            <p id="current-start" class="font-medium text-lg">--</p>
-          </div>
-          <div>
-            <p class="text-gray-400">Time Remaining:</p>
-            <p id="current-countdown" class="font-medium text-lg text-yellow-400">--</p>
+      <div class="col-lg-6">
+        <div class="card bg-dark border-light shadow-lg fade-in">
+          <div class="card-body">
+            <h2 class="card-title h4 text-primary mb-4">Current Game</h2>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <p class="text-muted mb-1">Issue Number:</p>
+                <p id="current-issue" class="fw-medium fs-5">--</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted mb-1">Start Time:</p>
+                <p id="current-start" class="fw-medium fs-5">--</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted mb-1">Time Remaining:</p>
+                <p id="current-countdown" class="fw-medium fs-5 text-warning">--</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Prediction -->
-      <div class="bg-gray-800 shadow-xl rounded-lg p-6 fade-in">
-        <h2 class="text-2xl font-semibold mb-4 text-purple-300">Number Prediction</h2>
-        <div class="text-center">
-          <p class="text-gray-400">Predicted Number:</p>
-          <p id="predicted-number" class="text-4xl font-bold text-purple-400 mb-2">--</p>
-          <p class="text-gray-400">Confidence:</p>
-          <p id="confidence-score" class="font-medium text-lg">--%</p>
+      <!-- Predictions -->
+      <div class="col-lg-6">
+        <div class="card bg-dark border-light shadow-lg fade-in">
+          <div class="card-body">
+            <h2 class="card-title h4 text-primary mb-4">Number Predictions</h2>
+            <!-- Real-time Predictions -->
+            <h3 class="h5 text-info mb-3">Next Game Predictions</h3>
+            <div id="real-time-predictions" class="row g-3 mb-4">
+              <!-- Populated by JavaScript -->
+            </div>
+            <!-- User Issue Prediction -->
+            <h3 class="h5 text-info mb-3">Predict by Issue Number</h3>
+            <div class="input-group mb-3 issue-input">
+              <input type="text" id="issue-input" class="form-control bg-dark text-light border-light" placeholder="Enter issue number">
+              <button id="predict-btn" class="btn btn-primary">Predict</button>
+            </div>
+            <div id="issue-predictions" class="row g-3">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- History Table -->
-    <div class="bg-gray-800 shadow-xl rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4 text-blue-300">Game History</h2>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="bg-gray-700">
-              <th class="p-3 text-gray-300">Issue Number</th>
-              <th class="p-3 text-gray-300">Number</th>
-              <th class="p-3 text-gray-300">Color</th>
-              <th class="p-3 text-gray-300">Premium</th>
-              <th class="p-3 text-gray-300">Sum</th>
-            </tr>
-          </thead>
-          <tbody id="history-table" class="divide-y divide-gray-700">
-            <!-- Populated by JavaScript -->
-          </tbody>
-        </table>
+    <div class="card bg-dark border-light shadow-lg mb-5">
+      <div class="card-body">
+        <h2 class="card-title h4 text-primary mb-4">Game History</h2>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Issue Number</th>
+                <th scope="col">Number</th>
+                <th scope="col">Color</th>
+                <th scope="col">Premium</th>
+                <th scope="col">Sum</th>
+              </tr>
+            </thead>
+            <tbody id="history-table">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Chart -->
+    <div class="card bg-dark border-light shadow-lg">
+      <div class="card-body">
+        <h2 class="card-title h4 text-primary mb-4">Number Distribution</h2>
+        <canvas id="number-chart" style="max-height: 300px;"></canvas>
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script>
-    async function fetchLotteryData() {
-      try {
-        const response = await fetch('https://p.mob.workers.dev/both');
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        return null;
-      }
-    }
-
-    function formatTimestamp(timestamp) {
-      return new Date(timestamp).toLocaleString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+    function fetchLotteryData() {
+      return $.ajax({
+        url: 'https://p.mob.workers.dev/both',
+        method: 'GET',
+        dataType: 'json'
+      }).fail(function(jqXHR, textStatus) {
+        console.error('Error fetching data:', textStatus);
       });
     }
 
-    function updateCurrentGame(current) {
-      document.getElementById('current-issue').textContent = current.current.issueNumber;
-      document.getElementById('current-start').textContent = formatTimestamp(current.current.startTime);
+    function formatTimestamp(timestamp) {
+      return moment(timestamp).format('MMM D, YYYY HH:mm:ss');
+    }
 
-      const endTime = new Date(current.current.endTime);
+    function updateCurrentGame(current) {
+      $('#current-issue').text(current.current.issueNumber);
+      $('#current-start').text(formatTimestamp(current.current.startTime));
+
+      const endTime = moment(current.current.endTime);
       const updateCountdown = () => {
-        const now = new Date();
-        const timeLeft = endTime - now;
+        const now = moment();
+        const timeLeft = endTime.diff(now);
         if (timeLeft <= 0) {
-          document.getElementById('current-countdown').textContent = 'Ended';
+          $('#current-countdown').text('Ended').addClass('text-danger');
           clearInterval(countdownInterval);
-          fetchAndUpdate(); // Refresh data when current game ends
+          fetchAndUpdate(); // Refresh when game ends
         } else {
           const seconds = Math.floor(timeLeft / 1000);
-          document.getElementById('current-countdown').textContent = `${seconds}s`;
+          $('#current-countdown').text(`${seconds}s`).removeClass('text-danger');
         }
       };
       updateCountdown();
       const countdownInterval = setInterval(updateCountdown, 1000);
     }
 
-    function predictNumber(history) {
-      const numbers = history.data.list.slice(0, 10).map(item => parseInt(item.number));
-      const frequency = Array(10).fill(0);
-      numbers.forEach(num => frequency[num]++);
+    function predictNumbers(history, targetIssue = null) {
+      let numbers = history.data.list.map(item => ({
+        number: parseInt(item.number),
+        color: item.color,
+        issue: parseInt(item.issueNumber)
+      }));
 
-      // Find the most frequent number
-      let maxFreq = Math.max(...frequency);
-      let predicted = frequency.indexOf(maxFreq);
-      
-      // If no clear winner, use weighted random choice
-      if (maxFreq <= 1) {
-        const total = frequency.reduce((sum, count) => sum + count, 0);
-        const weights = frequency.map(count => count / total);
-        let rand = Math.random();
-        for (let i = 0; i < weights.length; i++) {
-          rand -= weights[i];
-          if (rand <= 0) {
-            predicted = i;
-            break;
-          }
+      // Filter history before target issue if specified
+      if (targetIssue) {
+        numbers = numbers.filter(item => item.issue < parseInt(targetIssue));
+        if (numbers.length === 0) {
+          return { error: 'No data available before this issue number.' };
         }
       }
 
-      // Calculate confidence score
-      const totalNumbers = numbers.length;
-      const confidence = totalNumbers > 0 ? ((frequency[predicted] / totalNumbers) * 100).toFixed(1) : 0;
+      // Take last 20 numbers (or fewer if not enough data)
+      numbers = numbers.slice(0, 20);
 
-      return { predicted, confidence };
+      // Calculate scores for each number (0-9)
+      const scores = Array(10).fill(0);
+      const maxIssue = Math.max(...numbers.map(n => n.issue));
+      numbers.forEach((item, index) => {
+        const recencyWeight = 1 - (index / 20); // More recent = higher weight
+        const colorWeight = item.color.includes('red') ? 1.2 : item.color.includes('green') ? 1.1 : 1.0;
+        scores[item.number] += recencyWeight * colorWeight;
+      });
+
+      // Normalize scores and calculate confidence
+      const totalScore = scores.reduce((sum, score) => sum + score, 0);
+      const confidences = scores.map(score => totalScore > 0 ? (score / totalScore * 100).toFixed(1) : 0);
+
+      // Get top 3 predictions
+      const predictions = scores
+        .map((score, index) => ({ number: index, score, confidence: confidences[index] }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+      return { predictions };
     }
 
-    function updatePrediction(history) {
-      const { predicted, confidence } = predictNumber(history);
-      document.getElementById('predicted-number').textContent = predicted;
-      document.getElementById('confidence-score').textContent = `${confidence}%`;
-    }
-
-    function updateHistoryTable(history) {
-      const tbody = document.getElementById('history-table');
-      tbody.innerHTML = '';
-      history.data.list.forEach(item => {
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-700 hover-scale';
-        row.innerHTML = `
-          <td class="p-3">${item.issueNumber}</td>
-          <td class="p-3">${item.number}</td>
-          <td class="p-3">
-            <div class="w-6 h-6 rounded-full color-${item.color.replace(',', '-')}" title="${item.color}"></div>
-          </td>
-          <td class="p-3">${item.premium}</td>
-          <td class="p-3">${item.sum}</td>
+    function updatePredictions(predictions, containerId) {
+      const $container = $(`#${containerId}`).empty();
+      if (predictions.error) {
+        $container.append(`
+          <div class="col-12">
+            <p class="text-danger">${predictions.error}</p>
+          </div>
+        `);
+        return;
+      }
+      predictions.predictions.forEach(pred => {
+        const card = `
+          <div class="col-12 prediction-card bg-dark border-light p-3 rounded">
+            <p class="mb-1 text-muted">Predicted Number: <span class="fw-bold fs-4 text-primary">${pred.number}</span></p>
+            <p class="mb-0 text-muted">Confidence: <span class="fw-medium">${pred.confidence}%</span></p>
+          </div>
         `;
-        tbody.appendChild(row);
+        $container.append(card);
       });
     }
 
-    async function fetchAndUpdate() {
-      const data = await fetchLotteryData();
-      if (data) {
-        updateCurrentGame(data.current);
-        updateHistoryTable(data.history);
-        updatePrediction(data.history);
-      }
+    function updateHistoryTable(history) {
+      const $tbody = $('#history-table').empty();
+      history.data.list.forEach(item => {
+        const row = `
+          <tr class="hover-scale">
+            <td class="py-3">${item.issueNumber}</td>
+            <td class="py-3">${item.number}</td>
+            <td class="py-3">
+              <div class="w-6 h-6 rounded-circle color-${item.color.replace(',', '-')}" title="${item.color}"></div>
+            </td>
+            <td class="py-3">${item.premium}</td>
+            <td class="py-3">${item.sum}</td>
+          </tr>
+        `;
+        $tbody.append(row);
+      });
     }
+
+    function updateChart(history) {
+      const numbers = history.data.list.slice(0, 20).map(item => parseInt(item.number));
+      const frequency = Array(10).fill(0);
+      numbers.forEach(num => frequency[num]++);
+
+      const ctx = document.getElementById('number-chart').getContext('2d');
+      if (window.numberChart) window.numberChart.destroy();
+      window.numberChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Array.from({ length: 10 }, (_, i) => i),
+          datasets: [{
+            label: 'Number Frequency',
+            data: frequency,
+            backgroundColor: '#007bff',
+            borderColor: '#0056b3',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Occurrences' } },
+            x: { title: { display: true, text: 'Number' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function fetchAndUpdate() {
+      fetchLotteryData().done(data => {
+        if (data) {
+          updateCurrentGame(data.current);
+          updateHistoryTable(data.history);
+          updatePredictions(predictNumbers(data.history), 'real-time-predictions');
+          updateChart(data.history);
+        }
+      });
+    }
+
+    // Handle user issue prediction
+    $('#predict-btn').on('click', function() {
+      const issueNumber = $('#issue-input').val().trim();
+      if (!/^\d+$/.test(issueNumber)) {
+        $('#issue-predictions').html('<div class="col-12"><p class="text-danger">Please enter a valid issue number.</p></div>');
+        return;
+      }
+      fetchLotteryData().done(data => {
+        if (data) {
+          const predictions = predictNumbers(data.history, issueNumber);
+          updatePredictions(predictions, 'issue-predictions');
+        }
+      });
+    });
 
     // Initial fetch and update
     fetchAndUpdate();
-    // Refresh data every 30 seconds
+    // Refresh every 30 seconds
     setInterval(fetchAndUpdate, 30000);
   </script>
 </body>
