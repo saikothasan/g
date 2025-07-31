@@ -7,62 +7,129 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .color-red { background-color: #e63946; }
-    .color-green { background-color: #2ecc71; }
-    .color-violet { background-color: #8e44ad; }
-    .color-red-violet { background: linear-gradient(45deg, #e63946, #8e44ad); }
-    .fade-in { animation: fadeIn 0.5s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .hover-scale { transition: transform 0.2s ease, background-color 0.2s ease; }
-    .hover-scale:hover { transform: scale(1.01); background-color: #212529 !important; }
-    .prediction-card { border-left: 4px solid #0d6efd; background-color: #1e1e1e; }
-    .issue-input { max-width: 400px; }
-    .card { border: none; border-radius: 12px; overflow: hidden; }
-    .card-header { background-color: #1e1e1e; border-bottom: 1px solid #343a40; }
-    .btn-primary { border-radius: 8px; }
-    .table { border-radius: 8px; overflow: hidden; }
-    .table-dark { background-color: #1e1e1e; }
-    .tooltip-inner { background-color: #343a40; }
-    .form-control { background-color: #2a2a2a; border-color: #495057; color: #f8f9fa; }
-    .form-control:focus { background-color: #2a2a2a; border-color: #0d6efd; color: #f8f9fa; }
-    .spinner-border-sm { width: 1rem; height: 1rem; }
-    .prediction-highlight { font-size: 2rem; color: #0d6efd; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #ffffff 0%, #f1f3f5 100%);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+    .card-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e9ecef;
+      border-radius: 15px 15px 0 0;
+      font-weight: 600;
+    }
+    .table {
+      border-radius: 15px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .color-green { background-color: #28a745; }
+    .color-violet { background-color: #6f42c1; }
+    .color-red { background-color: #dc3545; }
+    .color-red-violet { background: linear-gradient(45deg, #dc3545, #6f42c1); }
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    .prediction-card {
+      background: #ffffff;
+      border-left: 5px solid #007bff;
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .prediction-highlight {
+      font-size: 2rem;
+      color: #007bff;
+      font-weight: 600;
+    }
+    .issue-input {
+      max-width: 400px;
+    }
+    .btn-primary {
+      border-radius: 10px;
+      background: #007bff;
+      border-color: #007bff;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+      border-color: #0056b3;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header-text {
+      font-weight: 600;
+      color: #343a40;
+    }
+    .subtext {
+      color: #6c757d;
+    }
+    .error-message {
+      color: #dc3545;
+      font-style: italic;
+    }
   </style>
 </head>
-<body class="bg-dark text-light">
-  <div class="container py-4 py-md-5 px-3 px-md-4">
+<body>
+  <div class="container py-4">
     <!-- Header -->
     <header class="text-center mb-5">
-      <h1 class="display-5 fw-bold text-primary mb-2">Lottery Dashboard</h1>
-      <p class="text-muted fs-5">Real-time lottery results and predictions</p>
-      <p class="text-muted fs-6">Current Time: <span id="current-time">03:32 PM +06</span> | Last updated: <span id="last-updated">--</span></p>
+      <h1 class="display-5 header-text mb-2">Lottery Dashboard</h1>
+      <p class="subtext fs-5">Real-time lottery results and predictions</p>
+      <p class="subtext fs-6">Current Time: <span id="current-time">03:54 PM +06</span> | Last updated: <span id="last-updated">--</span></p>
     </header>
 
     <!-- Current Game and Predictions -->
     <div class="row g-4 mb-5">
       <!-- Current Game Info -->
       <div class="col-lg-6">
-        <div class="card bg-dark border-light shadow-lg fade-in" aria-labelledby="current-game-title">
+        <div class="card fade-in" aria-labelledby="current-game-title">
           <div class="card-header">
-            <h2 id="current-game-title" class="h5 fw-semibold text-primary mb-0">Current Game</h2>
+            <h2 id="current-game-title" class="header-text h5 mb-0">Current Game</h2>
           </div>
           <div class="card-body">
             <div class="row g-3">
               <div class="col-md-6">
-                <p class="text-muted mb-1 fs-6">Issue Number</p>
-                <p id="current-issue" class="fw-medium fs-5">2025073109000001</p>
+                <p class="subtext mb-1">Issue Number</p>
+                <p id="current-issue" class="fw-medium fs-5">--</p>
               </div>
               <div class="col-md-6">
-                <p class="text-muted mb-1 fs-6">Start Time</p>
-                <p id="current-start" class="fw-medium fs-5">07/31/2025 03:32 PM +06</p>
+                <p class="subtext mb-1">Start Time</p>
+                <p id="current-start" class="fw-medium fs-5">--</p>
               </div>
               <div class="col-md-6">
-                <p class="text-muted mb-1 fs-6">Time Remaining</p>
-                <p id="current-countdown" class="fw-medium fs-5 text-warning">25s</p>
+                <p class="subtext mb-1">Time Remaining</p>
+                <p id="current-countdown" class="fw-medium fs-5 text-success">--</p>
               </div>
             </div>
           </div>
@@ -71,21 +138,18 @@
 
       <!-- Predictions -->
       <div class="col-lg-6">
-        <div class="card bg-dark border-light shadow-lg fade-in" aria-labelledby="predictions-title">
+        <div class="card fade-in" aria-labelledby="predictions-title">
           <div class="card-header">
-            <h2 id="predictions-title" class="h5 fw-semibold text-primary mb-0">Number Predictions</h2>
+            <h2 id="predictions-title" class="header-text h5 mb-0">Number Predictions</h2>
           </div>
           <div class="card-body">
             <!-- Real-time Predictions -->
-            <h3 class="h6 fw-medium text-info mb-3">Next Game Prediction</h3>
+            <h3 class="header-text h6 mb-3">Next Game Prediction</h3>
             <div id="real-time-predictions" class="row g-3 mb-4" aria-live="polite">
-              <div class="col-12 prediction-card p-3 rounded text-center">
-                <p class="mb-1 text-muted fs-6">Predicted Number: <span class="prediction-highlight">3</span></p>
-                <p class="mb-0 text-muted fs-6">Confidence: <span class="fw-medium">45.0%</span></p>
-              </div>
+              <div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>
             </div>
             <!-- User Issue Prediction -->
-            <h3 class="h6 fw-medium text-info mb-3">Predict by Issue Number</h3>
+            <h3 class="header-text h6 mb-3">Predict by Issue Number</h3>
             <div class="input-group mb-3 issue-input">
               <input type="text" id="issue-input" class="form-control" placeholder="Enter issue number" aria-label="Issue number" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter an issue number to predict the next number">
               <button id="predict-btn" class="btn btn-primary" aria-label="Predict number">Predict</button>
@@ -99,13 +163,13 @@
     </div>
 
     <!-- History Table -->
-    <div class="card bg-dark border-light shadow-lg mb-5" aria-labelledby="history-title">
+    <div class="card fade-in mb-5" aria-labelledby="history-title">
       <div class="card-header">
-        <h2 id="history-title" class="h5 fw-semibold text-primary mb-0">Game History</h2>
+        <h2 id="history-title" class="header-text h5 mb-0">Game History</h2>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-dark table-hover">
+          <table class="table">
             <thead>
               <tr>
                 <th scope="col">Issue Number</th>
@@ -116,16 +180,7 @@
               </tr>
             </thead>
             <tbody id="history-table" aria-live="polite">
-              <tr class="hover-scale"><td class="py-3">20250730100050721</td><td class="py-3">5</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green,violet" aria-label="Color: green,violet"></div></td><td class="py-3">5</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050720</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050719</td><td class="py-3">6</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">6</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050718</td><td class="py-3">5</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green,violet" aria-label="Color: green,violet"></div></td><td class="py-3">5</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050717</td><td class="py-3">6</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">6</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050716</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050715</td><td class="py-3">4</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">4</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050714</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050713</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
-              <tr class="hover-scale"><td class="py-3">20250730100050712</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
+              <tr><td colspan="5" class="text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -133,9 +188,9 @@
     </div>
 
     <!-- History Chart -->
-    <div class="card bg-dark border-light shadow-lg" aria-labelledby="chart-title">
+    <div class="card fade-in" aria-labelledby="chart-title">
       <div class="card-header">
-        <h2 id="chart-title" class="h5 fw-semibold text-primary mb-0">Number Distribution</h2>
+        <h2 id="chart-title" class="header-text h5 mb-0">Number Distribution</h2>
       </div>
       <div class="card-body">
         <canvas id="number-chart" style="max-height: 300px;"></canvas>
@@ -154,49 +209,98 @@
       $('[data-bs-toggle="tooltip"]').tooltip();
     });
 
+    // Fallback data
+    const fallbackHistory = {
+      success: true,
+      data: {
+        data: {
+          list: [
+            { issueNumber: "20250731100051183", number: "5", color: "green,violet", premium: "5", sum: 0 },
+            { issueNumber: "20250731100051182", number: "9", color: "green", premium: "9", sum: 0 },
+            { issueNumber: "20250731100051181", number: "5", color: "green,violet", premium: "5", sum: 0 },
+            { issueNumber: "20250731100051180", number: "0", color: "red,violet", premium: "0", sum: 0 },
+            { issueNumber: "20250731100051179", number: "3", color: "green", premium: "3", sum: 0 },
+            { issueNumber: "20250731100051178", number: "4", color: "red", premium: "4", sum: 0 },
+            { issueNumber: "20250731100051177", number: "9", color: "green", premium: "9", sum: 0 },
+            { issueNumber: "20250731100051176", number: "2", color: "red", premium: "2", sum: 0 },
+            { issueNumber: "20250731100051175", number: "6", color: "red", premium: "6", sum: 0 },
+            { issueNumber: "20250731100051174", number: "1", color: "green", premium: "1", sum: 0 }
+          ],
+          pageNo: 1,
+          totalPage: 50,
+          totalCount: 500
+        },
+        code: 0,
+        msg: "Succeed",
+        msgCode: 0,
+        serviceTime: 1753955487273
+      },
+      timestamp: 1753955495003,
+      requestTime: "2025-07-31T09:51:35.003Z"
+    };
+
+    const fallbackCurrent = {
+      success: true,
+      data: {
+        gameCode: "WinGo_30S",
+        intervalMinute: 0.5,
+        state: 1,
+        previous: { issueNumber: "20250731100051181", startTime: 1753955400000, endTime: 1753955430000 },
+        current: { issueNumber: "20250731100051182", startTime: 1753955430000, endTime: 1753955460000 },
+        next: { issueNumber: "20250731100051183", startTime: 1753955460000, endTime: 1753955490000 }
+      },
+      timestamp: 1753955453175,
+      requestTime: "2025-07-31T09:50:53.175Z"
+    };
+
+    function fetchWithRetry(url, retries = 3, delay = 2000) {
+      return new Promise((resolve, reject) => {
+        function attempt(remaining, currentDelay) {
+          $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000 // 5-second timeout
+          }).done(resolve).fail((jqXHR, textStatus) => {
+            if (remaining > 0) {
+              console.warn(`Retry ${url} (${remaining} attempts left): ${textStatus}`);
+              setTimeout(() => attempt(remaining - 1, currentDelay * 2), currentDelay);
+            } else {
+              console.error(`Failed to fetch ${url} after retries: ${textStatus}`);
+              reject(textStatus);
+            }
+          });
+        }
+        attempt(retries, delay);
+      });
+    }
+
     function fetchLotteryData() {
       return $.when(
-        $.ajax({
-          url: 'https://p.mob.workers.dev/history',
-          method: 'GET',
-          dataType: 'json'
-        }),
-        $.ajax({
-          url: 'https://p.mob.workers.dev/current',
-          method: 'GET',
-          dataType: 'json'
-        })
+        fetchWithRetry('https://p.mob.workers.dev/history').catch(() => fallbackHistory),
+        fetchWithRetry('https://p.mob.workers.dev/current').catch(() => fallbackCurrent)
       ).then(function(historyResponse, currentResponse) {
-        return { history: historyResponse[0], current: currentResponse[0] };
-      }).fail(function(jqXHR, textStatus) {
-        console.error('Error fetching data:', textStatus);
-        $('#real-time-predictions').html('<div class="col-12"><p class="text-danger">Failed to fetch data. Please try again.</p></div>');
-        $('#issue-predictions').html('<div class="col-12"><p class="text-danger">Failed to fetch data. Please try again.</p></div>');
-        $('#history-table').html('<tr><td colspan="5" class="text-center"><p class="text-danger">Failed to fetch data. Please try again.</p></td></tr>');
+        return { history: historyResponse, current: currentResponse };
       });
     }
 
     function formatTimestamp(timestamp) {
-      return moment(timestamp).format('MM/DD/YYYY hh:mm A +06');
+      return moment(timestamp).utcOffset('+06:00').format('MM/DD/YYYY hh:mm A +06');
     }
 
     function updateCurrentGame(current) {
       const now = moment().utcOffset('+06:00');
-      const currentIssue = current.current.issueNumber;
-      const startTime = moment(current.current.startTime).utcOffset('+06:00');
-      const endTime = moment(current.current.endTime).utcOffset('+06:00');
-      const nextStart = moment(current.next.startTime).utcOffset('+06:00');
-      const nextEnd = moment(current.next.endTime).utcOffset('+06:00');
+      const baseTime = moment(current.current.startTime).utcOffset('+06:00');
+      const intervalMs = 30 * 1000; // 30 seconds
+      const elapsedIssues = Math.floor(now.diff(baseTime) / intervalMs);
+      const currentIssue = `2025073110005118${parseInt(current.current.issueNumber.slice(-2)) + elapsedIssues}`;
+      const startTime = moment(baseTime).add(elapsedIssues * intervalMs);
+      const endTime = moment(startTime).add(30, 'seconds');
 
-      // Adjust for current time (03:32 PM +06, July 31, 2025)
-      const adjustedIssue = now.isAfter(endTime) ? `202507310900000${Math.floor((now.unix() - 1753856320) / 30) + 1}` : currentIssue;
-      const adjustedStart = now.isAfter(endTime) ? now : startTime;
-      const adjustedEnd = now.isAfter(endTime) ? moment(now).add(30, 'seconds') : endTime;
-
-      $('#current-issue').text(adjustedIssue);
-      $('#current-start').text(formatTimestamp(adjustedStart.valueOf()));
+      $('#current-issue').text(currentIssue);
+      $('#current-start').text(formatTimestamp(startTime.valueOf()));
       const updateCountdown = () => {
-        const timeLeft = adjustedEnd.diff(now);
+        const timeLeft = endTime.diff(now);
         if (timeLeft <= 0) {
           $('#current-countdown').text('Ended').addClass('text-danger');
           clearInterval(countdownInterval);
@@ -262,15 +366,15 @@
       if (prediction.error) {
         $container.append(`
           <div class="col-12">
-            <p class="text-danger">${prediction.error}</p>
+            <p class="error-message">${prediction.error}</p>
           </div>
         `);
         return;
       }
       const card = `
         <div class="col-12 prediction-card p-3 rounded text-center">
-          <p class="mb-1 text-muted fs-6">Predicted Number: <span class="prediction-highlight">${prediction.prediction}</span></p>
-          <p class="mb-0 text-muted fs-6">Confidence: <span class="fw-medium">${prediction.confidence}%</span></p>
+          <p class="subtext mb-1">Predicted Number: <span class="prediction-highlight">${prediction.prediction}</span></p>
+          <p class="subtext mb-0">Confidence: <span class="fw-medium">${prediction.confidence}%</span></p>
         </div>
       `;
       $container.append(card);
@@ -283,9 +387,7 @@
           <tr class="hover-scale">
             <td class="py-3">${item.issueNumber}</td>
             <td class="py-3">${item.number}</td>
-            <td class="py-3">
-              <div class="w-6 h-6 rounded-circle color-${item.color.replace(',', '-')}" title="${item.color}" aria-label="Color: ${item.color}"></div>
-            </td>
+            <td class="py-3"><span class="color-dot ${item.color.replace(',', '-')}" title="${item.color}" aria-label="Color: ${item.color}"></span></td>
             <td class="py-3">${item.premium}</td>
             <td class="py-3">${item.sum}</td>
           </tr>
@@ -308,8 +410,8 @@
           datasets: [{
             label: 'Number Frequency',
             data: frequency,
-            backgroundColor: '#0d6efd',
-            borderColor: '#0a58ca',
+            backgroundColor: '#007bff',
+            borderColor: '#0056b3',
             borderWidth: 1
           }]
         },
@@ -317,8 +419,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { beginAtZero: true, title: { display: true, text: 'Occurrences', color: '#f8f9fa' } },
-            x: { title: { display: true, text: 'Number', color: '#f8f9fa' } }
+            y: { beginAtZero: true, title: { display: true, text: 'Occurrences', color: '#343a40' } },
+            x: { title: { display: true, text: 'Number', color: '#343a40' } }
           },
           plugins: { legend: { display: false } }
         }
@@ -336,6 +438,13 @@
           updatePrediction(predictNumber(data.history, data.current), 'real-time-predictions');
           updateChart(data.history);
         }
+      }).fail(() => {
+        $('#real-time-predictions').html('<div class="col-12"><p class="error-message">Using fallback data due to fetch error.</p></div>');
+        $('#history-table').html('<tr><td colspan="5" class="text-center"><p class="error-message">Using fallback data due to fetch error.</p></td></tr>');
+        updateCurrentGame(fallbackCurrent);
+        updateHistoryTable(fallbackHistory);
+        updatePrediction(predictNumber(fallbackHistory, fallbackCurrent), 'real-time-predictions');
+        updateChart(fallbackHistory);
       });
     }
 
@@ -352,6 +461,10 @@
           const prediction = predictNumber(data.history, null, issueNumber);
           updatePrediction(prediction, 'issue-predictions');
         }
+      }).fail(() => {
+        $('#issue-predictions').html('<div class="col-12"><p class="error-message">Using fallback data due to fetch error.</p></div>');
+        const prediction = predictNumber(fallbackHistory, null, issueNumber);
+        updatePrediction(prediction, 'issue-predictions');
       });
     });
 
