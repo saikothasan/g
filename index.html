@@ -3,475 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lottery Dashboard</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <!-- Custom CSS -->
+  <title>Guess the Next Number</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f8f9fa;
-      color: #212529;
-      min-height: 100vh;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f7fa;
+      color: #2c3e50;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
     .container {
-      max-width: 1200px;
-      padding-top: 2rem;
-      padding-bottom: 2rem;
-    }
-    .card {
-      border: none;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      background: linear-gradient(135deg, #ffffff 0%, #f1f3f5 100%);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    .header {
+      font-size: 28px;
+      font-weight: bold;
+      color: #e74c3c;
+      margin-bottom: 20px;
     }
-    .card-header {
-      background: #ffffff;
-      border-bottom: 1px solid #e9ecef;
-      border-radius: 15px 15px 0 0;
-      font-weight: 600;
+    .timer {
+      font-size: 20px;
+      font-weight: 500;
+      color: #e74c3c;
+      margin-bottom: 15px;
     }
-    .table {
-      border-radius: 15px;
-      overflow: hidden;
-      background: #ffffff;
+    .prediction {
+      font-size: 24px;
+      font-weight: bold;
+      color: #3498db;
+      margin: 15px 0;
     }
-    .table th, .table td {
-      vertical-align: middle;
+    .result {
+      font-size: 18px;
+      font-weight: 500;
+      margin-top: 15px;
+      color: #27ae60;
     }
-    .color-green { background-color: #28a745; }
-    .color-violet { background-color: #6f42c1; }
-    .color-red { background-color: #dc3545; }
-    .color-red-violet { background: linear-gradient(45deg, #dc3545, #6f42c1); }
-    .color-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
+    .history {
+      margin-top: 20px;
     }
-    .prediction-card {
-      background: #ffffff;
-      border-left: 5px solid #007bff;
-      border-radius: 10px;
-      padding: 1.5rem;
+    .history table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
-    .prediction-highlight {
-      font-size: 2rem;
-      color: #007bff;
-      font-weight: 600;
+    .history th, .history td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
     }
-    .issue-input {
-      max-width: 400px;
-    }
-    .btn-primary {
-      border-radius: 10px;
-      background: #007bff;
-      border-color: #007bff;
-    }
-    .btn-primary:hover {
-      background: #0056b3;
-      border-color: #0056b3;
-    }
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .header-text {
-      font-weight: 600;
-      color: #343a40;
-    }
-    .subtext {
-      color: #6c757d;
-    }
-    .error-message {
-      color: #dc3545;
-      font-style: italic;
+    .history th {
+      background-color: #ecf0f1;
+      color: #2c3e50;
     }
   </style>
 </head>
 <body>
-  <div class="container py-4">
-    <!-- Header -->
-    <header class="text-center mb-5">
-      <h1 class="display-5 header-text mb-2">Lottery Dashboard</h1>
-      <p class="subtext fs-5">Real-time lottery results and predictions</p>
-      <p class="subtext fs-6">Current Time: <span id="current-time">03:54 PM +06</span> | Last updated: <span id="last-updated">--</span></p>
-    </header>
-
-    <!-- Current Game and Predictions -->
-    <div class="row g-4 mb-5">
-      <!-- Current Game Info -->
-      <div class="col-lg-6">
-        <div class="card fade-in" aria-labelledby="current-game-title">
-          <div class="card-header">
-            <h2 id="current-game-title" class="header-text h5 mb-0">Current Game</h2>
-          </div>
-          <div class="card-body">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <p class="subtext mb-1">Issue Number</p>
-                <p id="current-issue" class="fw-medium fs-5">--</p>
-              </div>
-              <div class="col-md-6">
-                <p class="subtext mb-1">Start Time</p>
-                <p id="current-start" class="fw-medium fs-5">--</p>
-              </div>
-              <div class="col-md-6">
-                <p class="subtext mb-1">Time Remaining</p>
-                <p id="current-countdown" class="fw-medium fs-5 text-success">--</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Predictions -->
-      <div class="col-lg-6">
-        <div class="card fade-in" aria-labelledby="predictions-title">
-          <div class="card-header">
-            <h2 id="predictions-title" class="header-text h5 mb-0">Number Predictions</h2>
-          </div>
-          <div class="card-body">
-            <!-- Real-time Predictions -->
-            <h3 class="header-text h6 mb-3">Next Game Prediction</h3>
-            <div id="real-time-predictions" class="row g-3 mb-4" aria-live="polite">
-              <div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>
-            </div>
-            <!-- User Issue Prediction -->
-            <h3 class="header-text h6 mb-3">Predict by Issue Number</h3>
-            <div class="input-group mb-3 issue-input">
-              <input type="text" id="issue-input" class="form-control" placeholder="Enter issue number" aria-label="Issue number" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter an issue number to predict the next number">
-              <button id="predict-btn" class="btn btn-primary" aria-label="Predict number">Predict</button>
-            </div>
-            <div id="issue-predictions" class="row g-3" aria-live="polite">
-              <!-- Populated by JavaScript -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- History Table -->
-    <div class="card fade-in mb-5" aria-labelledby="history-title">
-      <div class="card-header">
-        <h2 id="history-title" class="header-text h5 mb-0">Game History</h2>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Issue Number</th>
-                <th scope="col">Number</th>
-                <th scope="col">Color</th>
-                <th scope="col">Premium</th>
-                <th scope="col">Sum</th>
-              </tr>
-            </thead>
-            <tbody id="history-table" aria-live="polite">
-              <tr><td colspan="5" class="text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- History Chart -->
-    <div class="card fade-in" aria-labelledby="chart-title">
-      <div class="card-header">
-        <h2 id="chart-title" class="header-text h5 mb-0">Number Distribution</h2>
-      </div>
-      <div class="card-body">
-        <canvas id="number-chart" style="max-height: 300px;"></canvas>
-      </div>
+  <div class="container">
+    <div class="header">Guess the Next Number</div>
+    <div id="timer" class="timer">Time remaining: 00:30</div>
+    <div id="currentIssue">Current Issue: Loading...</div>
+    <div class="prediction">Predicted Number: 9</div>
+    <div id="result" class="result">Result: Waiting...</div>
+    <div class="history">
+      <h3>Previous Results</h3>
+      <table>
+        <tr><th>Issue Number</th><th>Number</th></tr>
+        <tbody id="historyTable"></tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script>
-    // Initialize Bootstrap tooltips
-    $(function () {
-      $('[data-bs-toggle="tooltip"]').tooltip();
-    });
+    let walletBalance = 0;
+    const predictedNumber = 9; // Based on historical frequency analysis
 
-    // Fallback data
-    const fallbackHistory = {
-      success: true,
-      data: {
-        data: {
-          list: [
-            { issueNumber: "20250731100051183", number: "5", color: "green,violet", premium: "5", sum: 0 },
-            { issueNumber: "20250731100051182", number: "9", color: "green", premium: "9", sum: 0 },
-            { issueNumber: "20250731100051181", number: "5", color: "green,violet", premium: "5", sum: 0 },
-            { issueNumber: "20250731100051180", number: "0", color: "red,violet", premium: "0", sum: 0 },
-            { issueNumber: "20250731100051179", number: "3", color: "green", premium: "3", sum: 0 },
-            { issueNumber: "20250731100051178", number: "4", color: "red", premium: "4", sum: 0 },
-            { issueNumber: "20250731100051177", number: "9", color: "green", premium: "9", sum: 0 },
-            { issueNumber: "20250731100051176", number: "2", color: "red", premium: "2", sum: 0 },
-            { issueNumber: "20250731100051175", number: "6", color: "red", premium: "6", sum: 0 },
-            { issueNumber: "20250731100051174", number: "1", color: "green", premium: "1", sum: 0 }
-          ],
-          pageNo: 1,
-          totalPage: 50,
-          totalCount: 500
-        },
-        code: 0,
-        msg: "Succeed",
-        msgCode: 0,
-        serviceTime: 1753955487273
-      },
-      timestamp: 1753955495003,
-      requestTime: "2025-07-31T09:51:35.003Z"
-    };
-
-    const fallbackCurrent = {
-      success: true,
-      data: {
-        gameCode: "WinGo_30S",
-        intervalMinute: 0.5,
-        state: 1,
-        previous: { issueNumber: "20250731100051181", startTime: 1753955400000, endTime: 1753955430000 },
-        current: { issueNumber: "20250731100051182", startTime: 1753955430000, endTime: 1753955460000 },
-        next: { issueNumber: "20250731100051183", startTime: 1753955460000, endTime: 1753955490000 }
-      },
-      timestamp: 1753955453175,
-      requestTime: "2025-07-31T09:50:53.175Z"
-    };
-
-    function fetchWithRetry(url, retries = 3, delay = 2000) {
-      return new Promise((resolve, reject) => {
-        function attempt(remaining, currentDelay) {
-          $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'json',
-            timeout: 5000 // 5-second timeout
-          }).done(resolve).fail((jqXHR, textStatus) => {
-            if (remaining > 0) {
-              console.warn(`Retry ${url} (${remaining} attempts left): ${textStatus}`);
-              setTimeout(() => attempt(remaining - 1, currentDelay * 2), currentDelay);
-            } else {
-              console.error(`Failed to fetch ${url} after retries: ${textStatus}`);
-              reject(textStatus);
-            }
-          });
-        }
-        attempt(retries, delay);
-      });
+    function updateTimer(endTime) {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById('timer').innerText = `Time remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        fetchGameData();
+      }
     }
 
-    function fetchLotteryData() {
-      return $.when(
-        fetchWithRetry('https://p.mob.workers.dev/history').catch(() => fallbackHistory),
-        fetchWithRetry('https://p.mob.workers.dev/current').catch(() => fallbackCurrent)
-      ).then(function(historyResponse, currentResponse) {
-        return { history: historyResponse, current: currentResponse };
-      });
-    }
-
-    function formatTimestamp(timestamp) {
-      return moment(timestamp).utcOffset('+06:00').format('MM/DD/YYYY hh:mm A +06');
-    }
-
-    function updateCurrentGame(current) {
-      const now = moment().utcOffset('+06:00');
-      const baseTime = moment(current.current.startTime).utcOffset('+06:00');
-      const intervalMs = 30 * 1000; // 30 seconds
-      const elapsedIssues = Math.floor(now.diff(baseTime) / intervalMs);
-      const currentIssue = `2025073110005118${parseInt(current.current.issueNumber.slice(-2)) + elapsedIssues}`;
-      const startTime = moment(baseTime).add(elapsedIssues * intervalMs);
-      const endTime = moment(startTime).add(30, 'seconds');
-
-      $('#current-issue').text(currentIssue);
-      $('#current-start').text(formatTimestamp(startTime.valueOf()));
-      const updateCountdown = () => {
-        const timeLeft = endTime.diff(now);
-        if (timeLeft <= 0) {
-          $('#current-countdown').text('Ended').addClass('text-danger');
-          clearInterval(countdownInterval);
-          fetchAndUpdate(); // Refresh when game ends
-        } else {
-          const seconds = Math.floor(timeLeft / 1000);
-          $('#current-countdown').text(`${seconds}s`).removeClass('text-danger');
-        }
-        $('#current-time').text(now.format('hh:mm A +06'));
-      };
-      updateCountdown();
-      const countdownInterval = setInterval(updateCountdown, 1000);
-    }
-
-    function predictNumber(historyData, currentData, targetIssue = null) {
-      let numbers = historyData.data.list.map(item => ({
-        number: parseInt(item.number),
-        color: item.color,
-        issue: parseInt(item.issueNumber)
-      }));
-
-      // Add current.previous data if available and not predicting for a specific issue
-      if (!targetIssue && currentData && currentData.previous) {
-        numbers.unshift({
-          number: parseInt(currentData.previous.number),
-          color: currentData.previous.color,
-          issue: parseInt(currentData.previous.issueNumber)
+    function fetchGameData() {
+      fetch('https://p.mob.workers.dev/current')
+        .then(response => response.json())
+        .then(data => {
+          const current = data.data.current;
+          document.getElementById('currentIssue').innerText = `Current Issue: ${current.issueNumber}`;
+          const endTime = current.endTime;
+          updateTimer(endTime);
+          timerInterval = setInterval(() => updateTimer(endTime), 1000);
+          checkResult(data.data.previous);
         });
-      }
 
-      // Filter history before target issue if specified
-      if (targetIssue) {
-        numbers = numbers.filter(item => item.issue < parseInt(targetIssue));
-        if (numbers.length === 0) {
-          return { error: 'No data available before this issue number.', prediction: null };
+      fetch('https://p.mob.workers.dev/history')
+        .then(response => response.json())
+        .then(data => {
+          const history = data.data.data.list;
+          const table = document.getElementById('historyTable');
+          table.innerHTML = '';
+          history.slice(0, 5).forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${item.issueNumber}</td><td>${item.number}</td>`;
+            table.appendChild(row);
+          });
+        });
+    }
+
+    function checkResult(previous) {
+      if (previous) {
+        const result = parseInt(previous.number);
+        let winnings = 0;
+        if (result === predictedNumber) {
+          winnings = 98 * 9; // As per screenshot rules for correct number guess
         }
+        document.getElementById('result').innerText = `Result: ${result}, Winnings: ${winnings}`;
       }
-
-      // Take last 10 numbers
-      numbers = numbers.slice(0, 10);
-
-      // Calculate scores for each number (0-9)
-      const scores = Array(10).fill(0);
-      numbers.forEach((item, index) => {
-        const recencyWeight = index === 0 ? 1.5 : 1 - (index / 10); // Higher weight for the latest
-        const colorWeight = item.color.includes('green') ? 1.2 : item.color.includes('violet') ? 1.1 : 1.0;
-        scores[item.number] += recencyWeight * colorWeight;
-      });
-
-      // Normalize scores and calculate confidence
-      const totalScore = scores.reduce((sum, score) => sum + score, 0);
-      const confidences = scores.map(score => totalScore > 0 ? (score / totalScore * 100).toFixed(1) : 0);
-
-      // Select the number with the highest score
-      const bestPrediction = scores.indexOf(Math.max(...scores));
-      const confidence = confidences[bestPrediction];
-
-      return { prediction: bestPrediction, confidence };
     }
 
-    function updatePrediction(prediction, containerId) {
-      const $container = $(`#${containerId}`).empty();
-      if (prediction.error) {
-        $container.append(`
-          <div class="col-12">
-            <p class="error-message">${prediction.error}</p>
-          </div>
-        `);
-        return;
-      }
-      const card = `
-        <div class="col-12 prediction-card p-3 rounded text-center">
-          <p class="subtext mb-1">Predicted Number: <span class="prediction-highlight">${prediction.prediction}</span></p>
-          <p class="subtext mb-0">Confidence: <span class="fw-medium">${prediction.confidence}%</span></p>
-        </div>
-      `;
-      $container.append(card);
-    }
-
-    function updateHistoryTable(history) {
-      const $tbody = $('#history-table').empty();
-      history.data.list.slice(0, 10).forEach(item => {
-        const row = `
-          <tr class="hover-scale">
-            <td class="py-3">${item.issueNumber}</td>
-            <td class="py-3">${item.number}</td>
-            <td class="py-3"><span class="color-dot ${item.color.replace(',', '-')}" title="${item.color}" aria-label="Color: ${item.color}"></span></td>
-            <td class="py-3">${item.premium}</td>
-            <td class="py-3">${item.sum}</td>
-          </tr>
-        `;
-        $tbody.append(row);
-      });
-    }
-
-    function updateChart(history) {
-      const numbers = history.data.list.slice(0, 10).map(item => parseInt(item.number));
-      const frequency = Array(10).fill(0);
-      numbers.forEach(num => frequency[num]++);
-
-      const ctx = document.getElementById('number-chart').getContext('2d');
-      if (window.numberChart) window.numberChart.destroy();
-      window.numberChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: Array.from({ length: 10 }, (_, i) => i),
-          datasets: [{
-            label: 'Number Frequency',
-            data: frequency,
-            backgroundColor: '#007bff',
-            borderColor: '#0056b3',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: 'Occurrences', color: '#343a40' } },
-            x: { title: { display: true, text: 'Number', color: '#343a40' } }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    function fetchAndUpdate() {
-      $('#real-time-predictions').html('<div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>');
-      $('#history-table').html('<tr><td colspan="5" class="text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</td></tr>');
-      fetchLotteryData().done(data => {
-        if (data) {
-          $('#last-updated').text(formatTimestamp(Date.now()));
-          updateCurrentGame(data.current);
-          updateHistoryTable(data.history);
-          updatePrediction(predictNumber(data.history, data.current), 'real-time-predictions');
-          updateChart(data.history);
-        }
-      }).fail(() => {
-        $('#real-time-predictions').html('<div class="col-12"><p class="error-message">Using fallback data due to fetch error.</p></div>');
-        $('#history-table').html('<tr><td colspan="5" class="text-center"><p class="error-message">Using fallback data due to fetch error.</p></td></tr>');
-        updateCurrentGame(fallbackCurrent);
-        updateHistoryTable(fallbackHistory);
-        updatePrediction(predictNumber(fallbackHistory, fallbackCurrent), 'real-time-predictions');
-        updateChart(fallbackHistory);
-      });
-    }
-
-    // Handle user issue prediction
-    $('#predict-btn').on('click', function() {
-      const issueNumber = $('#issue-input').val().trim();
-      if (!/^\d+$/.test(issueNumber)) {
-        $('#issue-predictions').html('<div class="col-12"><p class="text-danger">Please enter a valid issue number.</p></div>');
-        return;
-      }
-      $('#issue-predictions').html('<div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>');
-      fetchLotteryData().done(data => {
-        if (data) {
-          const prediction = predictNumber(data.history, null, issueNumber);
-          updatePrediction(prediction, 'issue-predictions');
-        }
-      }).fail(() => {
-        $('#issue-predictions').html('<div class="col-12"><p class="error-message">Using fallback data due to fetch error.</p></div>');
-        const prediction = predictNumber(fallbackHistory, null, issueNumber);
-        updatePrediction(prediction, 'issue-predictions');
-      });
-    });
-
-    // Initial fetch and update
-    fetchAndUpdate();
-    // Refresh every 30 seconds
-    setInterval(fetchAndUpdate, 30000);
+    // Initial fetch
+    fetchGameData();
+    setInterval(fetchGameData, 30000); // Poll every 30 seconds
   </script>
 </body>
 </html>
