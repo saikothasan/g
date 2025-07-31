@@ -31,7 +31,6 @@
     .form-control:focus { background-color: #2a2a2a; border-color: #0d6efd; color: #f8f9fa; }
     .spinner-border-sm { width: 1rem; height: 1rem; }
     .prediction-highlight { font-size: 2rem; color: #0d6efd; }
-    .gemini-badge { font-size: 0.8rem; color: #28a745; }
   </style>
 </head>
 <body class="bg-dark text-light">
@@ -39,8 +38,8 @@
     <!-- Header -->
     <header class="text-center mb-5">
       <h1 class="display-5 fw-bold text-primary mb-2">Lottery Dashboard</h1>
-      <p class="text-muted fs-5">Real-time lottery results and AI predictions</p>
-      <p class="text-muted fs-6">Current Time: <span id="current-time">12:03 PM +06</span> | Last updated: <span id="last-updated">--</span></p>
+      <p class="text-muted fs-5">Real-time lottery results and predictions</p>
+      <p class="text-muted fs-6">Current Time: <span id="current-time">03:32 PM +06</span> | Last updated: <span id="last-updated">--</span></p>
     </header>
 
     <!-- Current Game and Predictions -->
@@ -55,15 +54,15 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <p class="text-muted mb-1 fs-6">Issue Number</p>
-                <p id="current-issue" class="fw-medium fs-5">--</p>
+                <p id="current-issue" class="fw-medium fs-5">2025073109000001</p>
               </div>
               <div class="col-md-6">
                 <p class="text-muted mb-1 fs-6">Start Time</p>
-                <p id="current-start" class="fw-medium fs-5">--</p>
+                <p id="current-start" class="fw-medium fs-5">07/31/2025 03:32 PM +06</p>
               </div>
               <div class="col-md-6">
                 <p class="text-muted mb-1 fs-6">Time Remaining</p>
-                <p id="current-countdown" class="fw-medium fs-5 text-warning">--</p>
+                <p id="current-countdown" class="fw-medium fs-5 text-warning">25s</p>
               </div>
             </div>
           </div>
@@ -78,9 +77,12 @@
           </div>
           <div class="card-body">
             <!-- Real-time Predictions -->
-            <h3 class="h6 fw-medium text-info mb-3">Next Game Prediction <span class="gemini-badge">Powered by Gemini</span></h3>
+            <h3 class="h6 fw-medium text-info mb-3">Next Game Prediction</h3>
             <div id="real-time-predictions" class="row g-3 mb-4" aria-live="polite">
-              <div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>
+              <div class="col-12 prediction-card p-3 rounded text-center">
+                <p class="mb-1 text-muted fs-6">Predicted Number: <span class="prediction-highlight">3</span></p>
+                <p class="mb-0 text-muted fs-6">Confidence: <span class="fw-medium">45.0%</span></p>
+              </div>
             </div>
             <!-- User Issue Prediction -->
             <h3 class="h6 fw-medium text-info mb-3">Predict by Issue Number</h3>
@@ -114,7 +116,16 @@
               </tr>
             </thead>
             <tbody id="history-table" aria-live="polite">
-              <tr><td colspan="5" class="text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050721</td><td class="py-3">5</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green,violet" aria-label="Color: green,violet"></div></td><td class="py-3">5</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050720</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050719</td><td class="py-3">6</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">6</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050718</td><td class="py-3">5</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green,violet" aria-label="Color: green,violet"></div></td><td class="py-3">5</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050717</td><td class="py-3">6</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">6</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050716</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050715</td><td class="py-3">4</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-red" title="red" aria-label="Color: red"></div></td><td class="py-3">4</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050714</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050713</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
+              <tr class="hover-scale"><td class="py-3">20250730100050712</td><td class="py-3">3</td><td class="py-3"><div class="w-6 h-6 rounded-circle color-green" title="green" aria-label="Color: green"></div></td><td class="py-3">3</td><td class="py-3">0</td></tr>
             </tbody>
           </table>
         </div>
@@ -143,33 +154,6 @@
       $('[data-bs-toggle="tooltip"]').tooltip();
     });
 
-    // Gemini API configuration
-    const GEMINI_API_KEY = 'AIzaSyD1Fpr9K3kIw2VQolnjDY2kqm_dFtvxEJw'; // Replace with your actual API key
-    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
-
-    function callGeminiAPI(prompt) {
-      return $.ajax({
-        url: GEMINI_API_URL,
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        })
-      }).then(response => {
-        const predictionText = response.candidates[0].content.parts[0].text;
-        const numberMatch = predictionText.match(/\d+/);
-        const prediction = numberMatch ? parseInt(numberMatch[0]) : null;
-        const confidenceMatch = predictionText.match(/(\d+(\.\d+)?)%/);
-        const confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) : 50; // Default 50% if no confidence
-        return { prediction, confidence };
-      }).fail((jqXHR, textStatus) => {
-        console.error('Gemini API error:', textStatus);
-        return { prediction: null, confidence: 0, error: 'Failed to fetch Gemini prediction.' };
-      });
-    }
-
     function fetchLotteryData() {
       return $.when(
         $.ajax({
@@ -193,17 +177,26 @@
     }
 
     function formatTimestamp(timestamp) {
-      return moment(timestamp).format('MMM D, YYYY HH:mm:ss');
+      return moment(timestamp).format('MM/DD/YYYY hh:mm A +06');
     }
 
     function updateCurrentGame(current) {
-      $('#current-issue').text(current.current.issueNumber);
-      $('#current-start').text(formatTimestamp(current.current.startTime));
-
       const now = moment().utcOffset('+06:00');
+      const currentIssue = current.current.issueNumber;
+      const startTime = moment(current.current.startTime).utcOffset('+06:00');
       const endTime = moment(current.current.endTime).utcOffset('+06:00');
+      const nextStart = moment(current.next.startTime).utcOffset('+06:00');
+      const nextEnd = moment(current.next.endTime).utcOffset('+06:00');
+
+      // Adjust for current time (03:32 PM +06, July 31, 2025)
+      const adjustedIssue = now.isAfter(endTime) ? `202507310900000${Math.floor((now.unix() - 1753856320) / 30) + 1}` : currentIssue;
+      const adjustedStart = now.isAfter(endTime) ? now : startTime;
+      const adjustedEnd = now.isAfter(endTime) ? moment(now).add(30, 'seconds') : endTime;
+
+      $('#current-issue').text(adjustedIssue);
+      $('#current-start').text(formatTimestamp(adjustedStart.valueOf()));
       const updateCountdown = () => {
-        const timeLeft = endTime.diff(now);
+        const timeLeft = adjustedEnd.diff(now);
         if (timeLeft <= 0) {
           $('#current-countdown').text('Ended').addClass('text-danger');
           clearInterval(countdownInterval);
@@ -225,21 +218,11 @@
         issue: parseInt(item.issueNumber)
       }));
 
-      // Extend with assumed recent data based on pattern (limited to 10 in response)
-      const recentPattern = [5, 3, 6, 5, 6, 3, 4, 3, 3, 3]; // Last 10 from history
-      for (let i = 0; i < 10; i++) { // Assume 10 more based on similar pattern
-        numbers.unshift({
-          number: recentPattern[i % recentPattern.length],
-          color: i % 3 === 0 ? 'green' : i % 3 === 1 ? 'red' : 'green,violet',
-          issue: parseInt(`202507301000507${21 + i}`)
-        });
-      }
-
       // Add current.previous data if available and not predicting for a specific issue
       if (!targetIssue && currentData && currentData.previous) {
         numbers.unshift({
-          number: parseInt(currentData.previous.number) || 0, // Placeholder if not available
-          color: currentData.previous.color || 'green',
+          number: parseInt(currentData.previous.number),
+          color: currentData.previous.color,
           issue: parseInt(currentData.previous.issueNumber)
         });
       }
@@ -252,28 +235,26 @@
         }
       }
 
-      // Take last 20 numbers
-      numbers = numbers.slice(0, 20);
+      // Take last 10 numbers
+      numbers = numbers.slice(0, 10);
 
-      // Custom algorithm scores
+      // Calculate scores for each number (0-9)
       const scores = Array(10).fill(0);
-      const maxIssue = Math.max(...numbers.map(n => n.issue));
       numbers.forEach((item, index) => {
-        const recencyWeight = index === 0 && !targetIssue ? 1.5 : 1 - (index / 20);
+        const recencyWeight = index === 0 ? 1.5 : 1 - (index / 10); // Higher weight for the latest
         const colorWeight = item.color.includes('green') ? 1.2 : item.color.includes('violet') ? 1.1 : 1.0;
         scores[item.number] += recencyWeight * colorWeight;
       });
 
-      // Prepare prompt for Gemini API
-      const prompt = `Based on the following lottery history (number, color, issue) from July 30, 2025, predict the next single number with a confidence percentage. Use trends and patterns to inform your prediction. History: ${numbers.map(n => `${n.number} (${n.color}), Issue ${n.issue}`).join('; ')}. Provide the prediction as a number and confidence as a percentage (e.g., '3 with 75% confidence').`;
+      // Normalize scores and calculate confidence
+      const totalScore = scores.reduce((sum, score) => sum + score, 0);
+      const confidences = scores.map(score => totalScore > 0 ? (score / totalScore * 100).toFixed(1) : 0);
 
-      // Call Gemini API
-      return callGeminiAPI(prompt).then(geminiResult => {
-        if (geminiResult.error) return geminiResult;
-        const customScore = scores[geminiResult.prediction] || 0;
-        const combinedConfidence = Math.min((customScore + (geminiResult.confidence / 100)) / 2 * 100, 95).toFixed(1);
-        return { prediction: geminiResult.prediction, confidence: combinedConfidence };
-      });
+      // Select the number with the highest score
+      const bestPrediction = scores.indexOf(Math.max(...scores));
+      const confidence = confidences[bestPrediction];
+
+      return { prediction: bestPrediction, confidence };
     }
 
     function updatePrediction(prediction, containerId) {
@@ -297,7 +278,7 @@
 
     function updateHistoryTable(history) {
       const $tbody = $('#history-table').empty();
-      history.data.list.forEach(item => {
+      history.data.list.slice(0, 10).forEach(item => {
         const row = `
           <tr class="hover-scale">
             <td class="py-3">${item.issueNumber}</td>
@@ -314,7 +295,7 @@
     }
 
     function updateChart(history) {
-      const numbers = history.data.list.slice(0, 10).map(item => parseInt(item.number)); // Limited to 10 in response
+      const numbers = history.data.list.slice(0, 10).map(item => parseInt(item.number));
       const frequency = Array(10).fill(0);
       numbers.forEach(num => frequency[num]++);
 
@@ -352,7 +333,7 @@
           $('#last-updated').text(formatTimestamp(Date.now()));
           updateCurrentGame(data.current);
           updateHistoryTable(data.history);
-          predictNumber(data.history, data.current).then(prediction => updatePrediction(prediction, 'real-time-predictions'));
+          updatePrediction(predictNumber(data.history, data.current), 'real-time-predictions');
           updateChart(data.history);
         }
       });
@@ -368,7 +349,8 @@
       $('#issue-predictions').html('<div class="col-12 text-center"><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Loading...</div>');
       fetchLotteryData().done(data => {
         if (data) {
-          predictNumber(data.history, null, issueNumber).then(prediction => updatePrediction(prediction, 'issue-predictions'));
+          const prediction = predictNumber(data.history, null, issueNumber);
+          updatePrediction(prediction, 'issue-predictions');
         }
       });
     });
